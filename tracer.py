@@ -13,25 +13,19 @@ boilerplate1 = """<html>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <style>
-        body {
-            margin: 2rem;
-            font-family: sans-serif;
+        body { margin: 2rem; font-family: sans-serif; }
+        @media (prefers-color-scheme: light) {
+            a, a:visited { color: blue; }
+            a:hover { background-color: yellow; }
         }
-        ul {
-            list-style-type: none;
+        @media (prefers-color-scheme: dark) {
+            body { background-color: #121212; color: #f5f5f5; }
+            a, a:visited { color: skyblue; }
+            a:hover { color: white; }
         }
-        a, a:visited {
-            color: blue;
-        }
-        a:hover {
-            background-color: yellow;
-        }
-        .dir {
-            font-size: 20px;
-        }
-        .file {
-            font-size: 18px;
-        }
+        ul { list-style-type: none; }
+        .dir { font-size: 20px; }
+        .file { font-size: 18px; }
     </style>
 </head>
 <body>
