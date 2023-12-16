@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Files</title>
+    <title>MATH3940 Notes</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <style>
@@ -14,26 +14,89 @@
             a, a:visited { color: skyblue; }
             a:hover { color: white; }
         }
-        ul { list-style-type: none; }
-        .dir { font-size: 20px; }
+        ul, li { list-style-type: none; }
+        .dir { font-size: 20px; font-weight: bold; }
         .file { font-size: 18px; }
+        .input { padding-right: 10%; }
+        .query { width: 100%; font-size: 20px; padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box; }
     </style>
 </head>
 <body>
     <h2>View Directory Contents</h2>
-    <ul>
-        <li class="dir"><b><a href="Final Notes">📁 Final Notes/</a></b></li>
-        <li class="dir"><b><a href="Neal Notes">📁 Neal Notes/</a></b></li>
-        <li class="dir"><b><a href="Other Notes">📁 Other Notes/</a></b></li>
-        <li class="dir"><b><a href="Random">📁 Random/</a></b></li>
-        <li class="dir"><b><a href="Solutions">📁 Solutions/</a></b></li>
+    <div class="input"><input type="text" class="query" id="query" class="query" placeholder="Search for a file" /></div>
+        <ul id="directory-list">
         <br />
-        <li class="file"><a target="_blank" href="3940Final_F21.pdf">📄 3940Final_F21.pdf</a></li>
-        <li class="file"><a target="_blank" href="3940Midterm_F21_solutions.pdf">📄 3940Midterm_F21_solutions.pdf</a></li>
-        <li class="file"><a target="_blank" href="Numerical Methods Using MATLAB, 3° ED. - John H. Mathews _ Kurtis D. Fink..pdf">📄 Numerical Methods Using MATLAB, 3° ED. - John H. Mathews _ Kurtis D. Fink..pdf</a></li>
-        <li class="file"><a target="_blank" href="Numerical Methods Using Matlab (3th Edition) by John H. Mathews, Kurtis K. Fink (z-lib.org).pdf">📄 Numerical Methods Using Matlab (3th Edition) by John H. Mathews, Kurtis K. Fink (z-lib.org).pdf</a></li>
-        <li class="file"><a target="_blank" href="OctaveNotes.pdf">📄 OctaveNotes.pdf</a></li>
-        <li class="file"><a target="_blank" href="numerical_analysis_9th.pdf">📄 numerical_analysis_9th.pdf</a></li>
     </ul>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+    <script>
+        
+        // Check if on an Android device or not.
+        var userAgent = navigator.userAgent.toLowerCase();
+        var Android = userAgent.indexOf("android") > -1;
+        var link = window.location.href;
+        
+        const data = [{name: "Final Notes", type: "folder"},{name: "Neal Notes", type: "folder"},{name: "Other Notes", type: "folder"},{name: "Problem Sets", type: "folder"},{name: "Random", type: "folder"},{name: "Solutions", type: "folder"},{name: "3940DifferenceFormulas.pdf", type: "file"},{name: "3940Final Exam_Formulas_F23.pdf", type: "file"},{name: "3940Final_F21.pdf", type: "file"},{name: "3940Midterm_F21_solutions.pdf", type: "file"},{name: "3940Test1_Solutions_F23.pdf", type: "file"},{name: "3940Test2_Solutions_F23.pdf", type: "file"},{name: "Course outline MATH3940-F23.pdf", type: "file"},{name: "Numerical Methods Using MATLAB, 3° ED. - John H. Mathews _ Kurtis D. Fink..pdf", type: "file"},{name: "Numerical Methods Using Matlab (3th Edition) by John H. Mathews, Kurtis K. Fink (z-lib.org).pdf", type: "file"},{name: "OctaveNotes.pdf", type: "file"},{name: "numerical_analysis_9th.pdf", type: "file"},]
+        
+        const fuse = new Fuse(data, {
+            keys: ['name'],
+            includeScore: true
+        })
+        
+        function addData(val) {
+            var ul = document.getElementById("directory-list"); // Get the ul element.
+            let data2 = [];
+            
+            if(val.length === 0) data2 = [...data];
+            else {
+                const results = fuse.search(val);
+                data2 = results.map(result => {
+                    return {
+                        name: result.item.name,
+                        type: result.item.type
+                    }
+                });
+            }
+            
+            ul.textContent = "";
+            
+            data2.map(object => {
+                if(object.type === "folder") {
+                    var a = document.createElement("a");
+                    a.href = `${object.name}`;
+                    a.value = `📁 ${object.name}/`;
+                    a.innerHTML = `📁 ${object.name}/`;
+                    var li = document.createElement("li");
+                    li.setAttribute("class", "dir");
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+            });
+            
+            var br = document.createElement("br");
+            ul.appendChild(br);
+            
+            data2.map(object => {
+                if(object.type === "file") {
+                    var a = document.createElement("a");
+                    if(Android) a.href = `https://docs.google.com/viewerng/viewer?url=${link}${object.name}`;
+                    else a.href = `${object.name}`;
+                    a.target = "_blank";
+                    a.value = `📄 ${object.name}`;
+                    a.innerHTML = `📄 ${object.name}`;
+                    var li = document.createElement("li");
+                    li.setAttribute("class", "file");
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                }
+            });
+        }
+        
+        addData("");
+        
+        document.getElementById("query").addEventListener("keyup", (e) => addData(e.target.value));
+        
+    </script>
 </body>
 </html>
